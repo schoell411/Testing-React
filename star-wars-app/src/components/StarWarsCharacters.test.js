@@ -1,17 +1,9 @@
 import React from "react";
-import { render, fireEvent, wait } from "@testing-library/react";
+import { render, fireEvent, wait, findByText } from "@testing-library/react";
 import { getData as mockGetData } from "../api";
 import StarWarsCharacters from "./StarWarsCharacters";
+import { act } from "react-dom/test-utils";
 
-test("renders previous/next buttons", () => {
-	// AAA Arrange, Act, Assert
-	const { getByText } = render(<StarWarsCharacters />);
-	const previousButton = getByText(/Previous/i);
-	const nextButton = getByText(/Next/i);
-
-	fireEvent.click(previousButton);
-	fireEvent.click(nextButton);
-});
 jest.mock("../api");
 
 const fakeData = {
@@ -24,6 +16,24 @@ const fakeData = {
 };
 
 mockGetData.mockResolvedValue(fakeData);
+
+test("renders previous/next buttons", () => {
+	// AAA Arrange, Act, Assert
+	const { getByText } = render(<StarWarsCharacters />);
+	const previousButton = getByText(/Previous/i);
+	const nextButton = getByText(/Next/i);
+
+	act(() => {
+		fireEvent.click(previousButton);
+		fireEvent.click(nextButton);
+	});
+	findByText(/success/i);
+});
+
+// test('renders success test', () => {
+// 	const { queryByText } = render(<StarWarsCharacters />);
+// })
+
 test("api test", async () => {
 	const { getByText } = render(<StarWarsCharacters />);
 
